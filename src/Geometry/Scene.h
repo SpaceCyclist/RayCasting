@@ -224,10 +224,8 @@ namespace Geometry
 			return reflexion;
 		}
 
-		RGBColor computeSpecularColor(PointLight const & pl, RayTriangleIntersection const & rTI, Math::Vector3f const & cameraOrientedNormale, Math::Vector3f const & intersectToCamera){
+		RGBColor computeSpecularColor(PointLight const & pl, RayTriangleIntersection const & rTI, Math::Vector3f const & reflexion,Math::Vector3f const & intersectToCamera){
 			//the first step is to compute the reflected ray. We name it R
-			Math::Vector3f reflexion(getReflectionRay(pl,rTI,cameraOrientedNormale));
-
 			/*
 			* Lets consider
 			* - K_s for the specular triangle color
@@ -236,7 +234,7 @@ namespace Geometry
 			* - n_shininess for the shininess coef of the triangle
 			* The formula is: I_spec = K_s * I_l (V.R)^{n_shininess}
 			*/
-			RGBColor specular(rTI.triangle()->material()->getSpecular()*pl->color())*pow(reflexion*intersectToCamera.normalized(),rTI.triangle()->material()->getShininess());
+			RGBColor specular(rTI.triangle()->material()->getSpecular()*pl.color()*pow(reflexion*intersectToCamera.normalized(),rTI.triangle()->material()->getShininess()));
 
 			return specular;
 		}
@@ -246,6 +244,7 @@ namespace Geometry
 			Math::Vector3f lightDirection(0.0);
 			Math::Vector3f lightPosition(0.0);
 			Math::Vector3f invertLightDirection(0.0);
+			Math::Vector3f reflectedRay(0.0);
 
 			Math::Vector3f intersection = rTI.intersection();
 			Math::Vector3f normale(triangle->normal(intersection));
@@ -275,11 +274,13 @@ namespace Geometry
 				if(scalarNL>0){ // si la source est dans notre demi espace (elle éclaire alors les objets devant nous)
 					if(!inShadow(*itLight,rTI)){ //est ce que la lumière éclaire bien notre objet?
 						colorDiffuse = (triangle->material()->getDiffuse()*itLight->color())*scalarNL;
-						colorSpecular = computeSpecularColor(*itLight,rTI,normale,intersectToSource);
+						reflectedRay = getReflectionRay(*itLight,rTI,normale);
+						colorSpecular = computeSpecularColor(*itLight,rTI,reflectedRay,intersectToSource);
 						colorResult = colorResult + colorDiffuse + colorSpecular;
 					}
 				}
 			}
+			colorResult = colorResult + triangle->material()->getEmissive();
 			return colorResult;
 		}
 
@@ -301,12 +302,13 @@ namespace Geometry
 		{
 			RGBColor result(0.0, 0.0, 0.0);
 			CastedRay cRay(ray);
+			if(depth!=maxDepth){
+				RayTriangleIntersection primaryIntersection = findIntersection(cRay);
 
-			RayTriangleIntersection primaryIntersection = findIntersection(cRay);
-
-			if(primaryIntersection.valid()){ //if we have a triangle
-				//compute the color with light
-				result = computeColor(primaryIntersection,cRay);
+				if(primaryIntersection.valid()){ //if we have a triangle
+					//compute the color with light
+					result = computeColor(primaryIntersection,cRay);
+				}
 			}
 
 			return result;
