@@ -1,0 +1,37 @@
+﻿Build started 29/09/2017 10:46:12.
+     1>Project "H:\ESIR2\SI\RayCasting\project 2010\RayCasting.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Release\RayCasting.unsuccessfulbuild".
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"H:\ESIR2\SI\RayCasting\project 2010\Release\RayCasting.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"H:\ESIR2\SI\RayCasting\project 2010\..\..\SDL2-2.0.4\lib\x86" /LIBPATH:"H:\ESIR2\SI\RayCasting\project 2010\..\..\dependencies_ima\lib\Release\\" opengl32.lib SOIL.lib SDL2.lib SDL2main.lib lib3ds.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\RayCasting.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"H:\ESIR2\SI\RayCasting\project 2010\Release\RayCasting.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"H:\ESIR2\SI\RayCasting\project 2010\Release\RayCasting.lib" /MACHINE:X86 Release\Scene.obj
+         Release\Loader3ds.obj
+         Release\main.obj
+         Release\sobol.obj
+         Generating code
+         Finished generating code
+     1>SOIL.lib(SOIL.obj) : warning LNK4204: 'H:\ESIR2\SI\RayCasting\project 2010\Release\vc100.pdb' is missing debugging information for referencing module; linking object as if no debug info
+     1>SOIL.lib(stb_image_aug.obj) : warning LNK4204: 'H:\ESIR2\SI\RayCasting\project 2010\Release\vc100.pdb' is missing debugging information for referencing module; linking object as if no debug info
+     1>SOIL.lib(image_helper.obj) : warning LNK4204: 'H:\ESIR2\SI\RayCasting\project 2010\Release\vc100.pdb' is missing debugging information for referencing module; linking object as if no debug info
+     1>SOIL.lib(image_DXT.obj) : warning LNK4204: 'H:\ESIR2\SI\RayCasting\project 2010\Release\vc100.pdb' is missing debugging information for referencing module; linking object as if no debug info
+         RayCasting.vcxproj -> H:\ESIR2\SI\RayCasting\project 2010\Release\RayCasting.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"H:\ESIR2\SI\RayCasting\project 2010\Release\RayCasting.exe;#1" /manifest Release\RayCasting.exe.intermediate.manifest
+       PostBuildEvent:
+         copy "H:\ESIR2\SI\RayCasting\project 2010\\..\..\dependencies_ima\lib\Release\*.dll" "H:\ESIR2\SI\RayCasting\project 2010\Release\"
+         
+         :VCEnd
+         H:\ESIR2\SI\RayCasting\project 2010\\..\..\dependencies_ima\lib\Release\tbb.dll
+         H:\ESIR2\SI\RayCasting\project 2010\\..\..\dependencies_ima\lib\Release\SDL2.dll
+         H:\ESIR2\SI\RayCasting\project 2010\\..\..\dependencies_ima\lib\Release\freeglut.dll
+         H:\ESIR2\SI\RayCasting\project 2010\\..\..\dependencies_ima\lib\Release\lib3ds-1_3.dll
+                 4 fichier(s) copié(s).
+       FinalizeBuildStatus:
+         Deleting file "Release\RayCasting.unsuccessfulbuild".
+         Touching "Release\RayCasting.lastbuildstate".
+     1>Done Building Project "H:\ESIR2\SI\RayCasting\project 2010\RayCasting.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.49

@@ -215,17 +215,15 @@ namespace Geometry
 			return shadow;
 		}
 
-		Math::Vector3f getReflectionRay(PointLight const & pl, RayTriangleIntersection const & rTI, Math::Vector3f const & cameraOrientedNormale /*name it N*/){
+		Math::Vector3f getReflectionRay(Math::Vector3f const & sourceToIntersect, Math::Vector3f const & normalOnIntersection /*name it N*/){
 			//first step, the reflected ray
-			Math::Vector3f intersectToLight(pl.position()-rTI.intersection()); //name it L
 			//the vector should be normalided to compute the cos. Camera is already normalized
-			 //the formule is (2(N.L)).N-L
-			Math::Vector3f reflexion((cameraOrientedNormale*(2.0*(cameraOrientedNormale*intersectToLight.normalized())))-intersectToLight.normalized());
+			//the formule is (-2(N.V)).N+V
+			Math::Vector3f reflexion((normalOnIntersection*(-2.0*(normalOnIntersection*sourceToIntersect.normalized())))+sourceToIntersect.normalized());
 			return reflexion;
 		}
 
 		RGBColor computeSpecularColor(PointLight const & pl, RayTriangleIntersection const & rTI, Math::Vector3f const & reflexion,Math::Vector3f const & intersectToCamera){
-			//the first step is to compute the reflected ray. We name it R
 			/*
 			* Lets consider
 			* - K_s for the specular triangle color
@@ -239,7 +237,7 @@ namespace Geometry
 			return specular;
 		}
 
-		RGBColor computeColor(RayTriangleIntersection const & rTI, CastedRay const & ray){
+		RGBColor phong(RayTriangleIntersection const & rTI, CastedRay const & ray){
 			Triangle * triangle = rTI.triangle();
 			Math::Vector3f lightDirection(0.0);
 			Math::Vector3f lightPosition(0.0);
@@ -271,12 +269,13 @@ namespace Geometry
 
 				//on regarde si la source vient de devant ou derrière (comparaison avec la normale produit scalaire)
 				scalarNL = lightDirection.normalized()*normale.normalized(); //le scalaire à la normale, pour être comparable avec cette dernière doit être nomalisé
-				if(scalarNL>0){ // si la source est dans notre demi espace (elle éclaire alors les objets devant nous)
+				if(scalarNL>0){ // si la lumière est dans le bon sens
 					if(!inShadow(*itLight,rTI)){ //est ce que la lumière éclaire bien notre objet?
 						colorDiffuse = (triangle->material()->getDiffuse()*itLight->color())*scalarNL;
-						reflectedRay = getReflectionRay(*itLight,rTI,normale);
+						reflectedRay = getReflectionRay(lightDirection,normale);
 						colorSpecular = computeSpecularColor(*itLight,rTI,reflectedRay,intersectToSource);
-						colorResult = colorResult + colorDiffuse + colorSpecular;
+						//l'intensité de l'éclairage réçu est invesement proportionnel au carré de la distance entre la source et la lumière
+						colorResult = colorResult + (colorDiffuse + colorSpecular)/lightDirection.norm(); //on peut prendre la norme au carré mais l'image est plus sombre
 					}
 				}
 			}
@@ -301,16 +300,26 @@ namespace Geometry
 		RGBColor sendRay(Ray const & ray, int depth, int maxDepth, int diffuseSamples, int specularSamples)
 		{
 			RGBColor result(0.0, 0.0, 0.0);
+			Math::Vector3f reflectedRayFromViewer(0.0);
+			Math::Vector3f normale(0.0);
+			Math::Vector3f sourceToIntersect(0.0);
+
 			CastedRay cRay(ray);
-			if(depth!=maxDepth){
+			if(depth<maxDepth){
 				RayTriangleIntersection primaryIntersection = findIntersection(cRay);
 
 				if(primaryIntersection.valid()){ //if we have a triangle
+					normale = primaryIntersection.triangle()->normal(primaryIntersection.intersection());
+					//bien orienter la normale
+					sourceToIntersect = ray.direction().normalized();
+					if(normale*sourceToIntersect>0){
+						normale = Math::Vector3f(0.0)-normale;
+					}
+					reflectedRayFromViewer = getReflectionRay(sourceToIntersect,normale);
 					//compute the color with light
-					result = computeColor(primaryIntersection,cRay);
+					result = phong(primaryIntersection,cRay) + sendRay(Ray(primaryIntersection.intersection(),reflectedRayFromViewer),depth+1,maxDepth,diffuseSamples,specularSamples)*primaryIntersection.triangle()->material()->getSpecular();
 				}
 			}
-
 			return result;
 		}
 

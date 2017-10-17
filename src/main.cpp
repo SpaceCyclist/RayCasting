@@ -23,7 +23,7 @@
 /// <summary>
 /// The directory of the 3D objetcs
 /// </summary>
-const std::string m_modelDirectory = "..\\..\\Models";
+const std::string m_modelDirectory = "../Models";
 
 using Geometry::RGBColor ;
 
@@ -596,7 +596,7 @@ void initMedievalCity(Geometry::Scene & scene)
 void initSombrero(Geometry::Scene & scene)
 {
 	Geometry::BoundingBox box(Math::makeVector(0.0f, 0.0f, 0.0f), Math::makeVector(0.0f, 0.0f, 0.0f));
-	Geometry::Loader3ds loader(m_modelDirectory+"\\sombrero\\sombrero.3ds", m_modelDirectory+"\\sombrero");
+	Geometry::Loader3ds loader(m_modelDirectory+"/sombrero/sombrero.3ds", m_modelDirectory+"/sombrero");
 	// We remove the specular components of the materials...
 	::std::vector<Geometry::Material*> materials = loader.getMaterials();
 	for (auto it = materials.begin(), end = materials.end(); it != end; ++it)
@@ -680,7 +680,7 @@ int main(int argc, char ** argv)
 
 	// 2.1 initializes the geometry (choose only one initialization)
 	// initDiffuse(scene) ;
-	initDiffuseSpecular(scene) ;
+	// initDiffuseSpecular(scene) ;
 	// initSpecular(scene) ;
 	//initGuitar(scene);
 	//initDog(scene);
@@ -689,7 +689,7 @@ int main(int argc, char ** argv)
 	//initRobot(scene);
 	//initGraveStone(scene);
 	//initBoat(scene);
-	//initSombrero(scene);
+	initSombrero(scene);
 	//initTibetHouse(scene);
 	//initTibetHouseInside(scene);
 	//initMedievalCity(scene);
@@ -703,7 +703,7 @@ int main(int argc, char ** argv)
 
 	unsigned int subPixelSampling = 4;	// Antialiasing
 	//unsigned int maxBounce = 5;
-	unsigned int maxBounce = 2;			// Maximum number of bounces
+	unsigned int maxBounce = 5;			// Maximum number of bounces
 
 	//scene.setDiffuseSamples(16);
 	//scene.setSpecularSamples(16);
